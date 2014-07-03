@@ -20,6 +20,10 @@ void blink(int led) {
 int main(void) {
     WDTCTL = WDTPW + WDTHOLD; // отключаем сторожевой таймер
     
+    // используем откалиброваную частоту для 1MHZ
+    BCSCTL1 = CALBC1_1MHZ;
+	DCOCTL = CALDCO_1MHZ;
+    
     P1OUT = 0;
     P1DIR = GREEN + RED;
     
@@ -31,5 +35,8 @@ int main(void) {
 		blink(GREEN);
 		while ((P1IN & BUTTON) == BUTTON);
 		blink(RED);
+		// используем откалиброваную частоту для 8MHZ
+		BCSCTL1 = CALBC1_8MHZ;
+		DCOCTL = CALDCO_8MHZ;
     }
 }
