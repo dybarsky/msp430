@@ -7,7 +7,9 @@ rm -rf $bin_dir
 mkdir $bin_dir
 
 # compile
+echo 'compile'
 msp430-gcc -g -mmcu=msp430g2553 -c ${src_dir}/main.c -o ${bin_dir}/main.o
+echo 'link'
 msp430-gcc -g -mmcu=msp430g2553 -o ${bin_dir}/main.elf ${bin_dir}/main.o
 # assembler output
 #msp430-objdump -DS ${bin_dir}/main.elf > ${bin_dir}/main.lst
