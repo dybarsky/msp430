@@ -1,4 +1,5 @@
 #!/bin/bash
+hdr_dir=src/include
 src_dir=src/source
 bin_dir=build
 
