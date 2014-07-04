@@ -4,6 +4,8 @@
 #define GREEN 	BIT6
 #define BUTTON 	BIT3
 
+int count;
+
 //~
 
 void _wait();
@@ -36,6 +38,10 @@ void _configure() {
     P1REN |= BUTTON; 							// разрешаем подтяжку
     P1OUT |= BUTTON; 							// подтяжка вывода P1.3 вверх
 
+	TACCR0 = 62500 - 1;							// период 62,500 циклов, от 0 до 62,499.
+	TACCTL0 = CCIE;  							// Разрешаем прерывание таймера по достижению значения CCR0.
+	TACTL = TASSEL_2 + ID_2 + MC_1 + TACLR;		// sub-mainClock + делитель частоты 8 + прямой счёт + инициализация
+
 	P1IES |= BIT3;  							// прерывание для 3-го порта по переходу из 1 в 0
 	P1IFG &= ~BIT3; 							// обнуляем флаг прерывания для 3-го бита
 												// для предотвращения немедленного срабатывания прерывания
@@ -46,13 +52,23 @@ void _configure() {
 
 //~
 
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void _on_timer(void) {
+    // Сброс флага прерывания таймера происходит автоматически, ручное обнуление не нужно
+    if (++count > 30) {
+		BCSCTL1 = CALBC1_8MHZ;				// используем откалиброваную частоту для 8MHZ
+		DCOCTL = CALDCO_8MHZ;
+	}
+}
+
 #pragma vector = PORT1_VECTOR
 __interrupt void _on_button_pressed(void) {
     switch(P1IFG & BIT3) {
         case BIT3:
             P1IFG &= ~BIT3;    					// обнуляем флаг прерывания для P1.3
-            BCSCTL1 = CALBC1_8MHZ;				// используем откалиброваную частоту для 8MHZ
-			DCOCTL = CALDCO_8MHZ;
+            BCSCTL1 = CALBC1_1MHZ;				// используем откалиброваную частоту для 8MHZ
+			DCOCTL = CALDCO_1MHZ;
+			count = 0;
             return;
         default:
             P1IFG = 0;   						// Возможно в этом нет необходимости, но обнуляем
