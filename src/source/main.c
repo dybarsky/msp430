@@ -6,14 +6,25 @@
 
 //~
 
-void wait();
+void _wait();
 
-void blink(int led_bit);
+void _blink(int led_bit);
+
+void _configure();
 
 //~
 
 int main(void) {
-    WDTCTL = WDTPW + WDTHOLD; 					// отключаем сторожевой таймер
+
+    _configure();								// первоначальная настройка контроллера
+
+    while (1) {
+		_blink(GREEN);							// мигаем зелёным
+    }
+}
+
+void _configure() {
+	WDTCTL = WDTPW + WDTHOLD; 					// отключаем сторожевой таймер
 
     BCSCTL1 = CALBC1_1MHZ;						// используем откалиброваную частоту для 1MHZ
 	DCOCTL = CALDCO_1MHZ;
@@ -31,10 +42,6 @@ int main(void) {
 	P1IE |= BIT3;   							// Разрешаем прерывания для порта 3
 
 	_BIS_SR(GIE);								// разрешаем прерывания
-
-    while (1) {
-		blink(GREEN);							// мигаем зелёным
-    }
 }
 
 //~
@@ -57,15 +64,15 @@ __interrupt void _on_button_pressed(void) {
 
 //~
 
-void wait() {
+void _wait() {
 	unsigned int count;
 	for (count = 0; count < 60000; count++);
 }
 
-void blink(int led) {
+void _blink(int led) {
 	unsigned int count;
 	for (count = 0; count < 6; count++) {
 		P1OUT ^= led;							// переключаем состояние пина
-		wait();
+		_wait();
 	}
 }
