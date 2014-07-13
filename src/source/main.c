@@ -18,6 +18,7 @@ void _configure();
 
 int main(void) {
     _configure();								// первоначальная настройка контроллера
+    _BIS_SR(LPM0_bits);							// переходим в энергоэффективный режим
 }
 
 void _configure() {
@@ -33,20 +34,20 @@ void _configure() {
 	TACCTL0 = CCIE;  							// Разрешаем прерывание таймера по достижению значения CCR0.
 	TACTL = TASSEL_2 + ID_3 + MC_1 + TACLR;		// sub-mainClock + делитель честоты 8 + прямой счёт + инициализация
 
-	_BIS_SR(LPM0_bits + GIE);								// разрешаем прерывания
+	_BIS_SR(GIE);								// разрешаем прерывания
 }
 
 //~
 
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void _on_timer(void) {
-	if (++count == 3) count = 0;
+	if (++count == 3) count = 0;				//	используются значения от 0 до 3
 	switch (count) {
 		case 0 :
-			OUT_PORT = GREEN_LED;
+			OUT_PORT = GREEN_LED;				// на 0 выключаем; t=0.5s
 			break;
 		case 1:
-			OUT_PORT = ~GREEN_LED;
+			OUT_PORT = ~GREEN_LED;				// на 1 включаем (на 2 уже включено); t=1s
 			break;
 	}
 }
