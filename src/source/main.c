@@ -18,7 +18,6 @@ void _configure();
 
 int main(void) {
     _configure();								// первоначальная настройка контроллера
-    while(1);
 }
 
 void _configure() {
@@ -34,7 +33,7 @@ void _configure() {
 	TACCTL0 = CCIE;  							// Разрешаем прерывание таймера по достижению значения CCR0.
 	TACTL = TASSEL_2 + ID_3 + MC_1 + TACLR;		// sub-mainClock + делитель честоты 8 + прямой счёт + инициализация
 
-	_BIS_SR(GIE);								// разрешаем прерывания
+	_BIS_SR(LPM0_bits + GIE);								// разрешаем прерывания
 }
 
 //~
