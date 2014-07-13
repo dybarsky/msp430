@@ -1,8 +1,9 @@
 #include <msp430g2553.h>
 
-#define RED 	BIT0
-#define GREEN 	BIT6
-#define BUTTON 	BIT3
+#define OUT_PORT	P2OUT
+#define OUT_DIR		P2DIR
+#define GREEN_LED	BIT3
+#define BUTTON 		BIT3
 
 int count;
 
@@ -21,7 +22,7 @@ int main(void) {
     _configure();								// первоначальная настройка контроллера
 
     while (1) {
-		_blink(GREEN);							// мигаем зелёным
+		_blink(GREEN_LED);							// мигаем диодом
     }
 }
 
@@ -31,8 +32,8 @@ void _configure() {
     BCSCTL1 = CALBC1_1MHZ;						// используем откалиброваную частоту для 1MHZ
 	DCOCTL = CALDCO_1MHZ;
 
-    P1OUT = 0;									// обнуляем регистр
-    P1DIR = GREEN;								// устанавливаем на выход пины 0 и 6
+    OUT_PORT = 0;								// обнуляем регистр
+    OUT_DIR = GREEN_LED;						// устанавливаем на выход пин 3
 
 												// Для LaunchPad версии 1.5 используем резистор
     P1REN |= BUTTON; 							// разрешаем подтяжку
@@ -42,10 +43,10 @@ void _configure() {
 	TACCTL0 = CCIE;  							// Разрешаем прерывание таймера по достижению значения CCR0.
 	TACTL = TASSEL_2 + ID_2 + MC_1 + TACLR;		// sub-mainClock + делитель частоты 8 + прямой счёт + инициализация
 
-	P1IES |= BIT3;  							// прерывание для 3-го порта по переходу из 1 в 0
-	P1IFG &= ~BIT3; 							// обнуляем флаг прерывания для 3-го бита
+	P1IES |= BUTTON;  							// прерывание для 3-го порта по переходу из 1 в 0
+	P1IFG &= ~BUTTON; 							// обнуляем флаг прерывания для 3-го бита
 												// для предотвращения немедленного срабатывания прерывания
-	P1IE |= BIT3;   							// Разрешаем прерывания для порта 3
+	P1IE |= BUTTON;   							// Разрешаем прерывания для порта 3
 
 	_BIS_SR(GIE);								// разрешаем прерывания
 }
@@ -65,7 +66,7 @@ __interrupt void _on_timer(void) {
 __interrupt void _on_button_pressed(void) {
     switch(P1IFG & BIT3) {
         case BIT3:
-            P1IFG &= ~BIT3;    					// обнуляем флаг прерывания для P1.3
+            P1IFG &= ~BUTTON;  					// обнуляем флаг прерывания для P1.3
             BCSCTL1 = CALBC1_1MHZ;				// используем откалиброваную частоту для 8MHZ
 			DCOCTL = CALDCO_1MHZ;
 			count = 0;
@@ -88,7 +89,7 @@ void _wait() {
 void _blink(int led) {
 	unsigned int count;
 	for (count = 0; count < 6; count++) {
-		P1OUT ^= led;							// переключаем состояние пина
+		OUT_PORT ^= led;							// переключаем состояние пина
 		_wait();
 	}
 }
