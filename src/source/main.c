@@ -7,6 +7,7 @@
 #define PERIOD      20000
 #define TIME_MIN    500
 #define TIME_MAX    2400
+#define TIME_AVR    1450
 
 //~
 
