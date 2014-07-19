@@ -8,9 +8,12 @@ mkdir $bin_dir
 
 # compile
 echo 'compile'
-msp430-gcc -g -mmcu=msp430g2553 -c ${src_dir}/main.c -o ${bin_dir}/main.o
+echo ':servo'
+msp430-gcc -g -mmcu=msp430g2553 -I${hdr_dir} -c ${src_dir}/servo.c -o ${bin_dir}/servo.o
+echo ':main'
+msp430-gcc -g -mmcu=msp430g2553 -I${hdr_dir} -c ${src_dir}/main.c -o ${bin_dir}/main.o
 echo 'link'
-msp430-gcc -g -mmcu=msp430g2553 -o ${bin_dir}/main.elf ${bin_dir}/main.o
+msp430-gcc -g -mmcu=msp430g2553 -o ${bin_dir}/main.elf ${bin_dir}/*.o
 # assembler output
 #msp430-objdump -DS ${bin_dir}/main.elf > ${bin_dir}/main.lst
 #msp430-objcopy -O ihex ${bin_dir}/main.elf ${bin_dir}/main.hex
