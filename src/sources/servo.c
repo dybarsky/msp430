@@ -5,10 +5,10 @@
 #define OUT_DIR     P1DIR
 #define SERVO       BIT6
 
-#define PERIOD      20000
-#define TIME_MIN    500
-#define TIME_MAX    2400
-#define TIME_AVR    1450
+#define PERIOD      60000
+#define TIME_MIN    1500
+#define TIME_MAX    7200
+#define TIME_AVR    4350
 
 void configure_servo()
 {
@@ -19,7 +19,7 @@ void configure_servo()
     TACCTL0 = CCIE;                             // enable interruption of timer when CCR0 is reached
     TACCR1 = TIME_AVR;                          // pulse duration modulation - 500 ms
     TACCTL1 = CCIE;                             // enable interruption of timer when CCR1 is reached
-    TACTL = TASSEL_2 + MC_1 + TACLR;            // sub-mainClock + прямой счёт + init
+    TACTL = TASSEL_2 + ID_2 + MC_1 + TACLR;     // sub-mainClock + freq divider 4 + up mode + init
 }
 
 void servo_max()
