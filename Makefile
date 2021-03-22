@@ -1,5 +1,5 @@
-SOURCES = src/source
-HEADERS = src/include
+SOURCES = src/sources
+HEADERS = src/headers
 OUT = build
 
 export OBJ
