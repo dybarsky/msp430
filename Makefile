@@ -3,8 +3,11 @@ HEADERS = src/headers
 OUT = build
 
 export OBJ
+OBJ += $(OUT)/led.o
+OBJ += $(OUT)/button.o
 OBJ += $(OUT)/servo.o
 OBJ += $(OUT)/main.o
+
 
 CC = msp430-gcc
 CFLAGS = -g -mmcu=msp430g2553
@@ -37,6 +40,14 @@ $(OUT)/firmware.elf: | build-dir $(OBJ)
 $(OUT)/main.o: $(SOURCES)/main.c $(HEADERS)/*.h
 	@echo "Compile $<";\
 	$(CC) $(CFLAGS) $(INCFLAGS) -c $(SOURCES)/main.c -o $(OUT)/main.o
+
+$(OUT)/led.o: $(SOURCES)/led.c $(HEADERS)/led.h
+	@echo "Compile $<";\
+	$(CC) $(CFLAGS) $(INCFLAGS) -c $(SOURCES)/led.c -o $(OUT)/led.o
+
+$(OUT)/button.o: $(SOURCES)/button.c $(HEADERS)/button.h
+	@echo "Compile $<";\
+	$(CC) $(CFLAGS) $(INCFLAGS) -c $(SOURCES)/button.c -o $(OUT)/button.o
 
 $(OUT)/servo.o: $(SOURCES)/servo.c $(HEADERS)/servo.h
 	@echo "Compile $<";\

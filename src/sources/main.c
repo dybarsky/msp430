@@ -1,5 +1,7 @@
 #include <msp430g2553.h>
-#include "servo.h"
+//#include "servo.h"
+#include "button.h"
+#include "led.h"
 
 void configure()
 {
@@ -15,10 +17,12 @@ void configure()
 
 int main(void) 
 {
-    configure();                                
-    configure_servo();
+    configure();     
+    configure_led();
+    configure_button();                           
+    //configure_servo();
 
-    servo_max();
+    //servo_max();
 
     _BIS_SR(LPM0_bits + GIE);                   // low power mode + enable interruptions
 }
