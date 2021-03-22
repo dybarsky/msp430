@@ -22,7 +22,7 @@ int main(void)
     //configure_button();                           
     configure_servo();
 
-    servo_max();
+    servo_set(0);
 
     _BIS_SR(LPM0_bits + GIE);                   // low power mode + enable interruptions
 }
